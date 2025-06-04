@@ -41,7 +41,9 @@ END;
 
 EXEC dbo.usp_GetAllEmployees
 
+
 --  2.	Write a procedure to get employee details by their BusinessEntityID. 
+
 GO
 CREATE PROCEDURE usp_GetEmployeeDetail
 	@BusinessEntityID INT
@@ -54,7 +56,9 @@ BEGIN
 END;
 EXEC dbo.usp_GetEmployeeDetail @BusinessEntityID=10;
 
+
 --	3.	Create a stored procedure to get all products from a specific ProductSubcategoryID. 
+
 SELECT * FROM production.product;
 GO
 CREATE PROCEDURE usp_GetAllProductsFromSpecificSubcategoryID
@@ -66,6 +70,7 @@ BEGIN
 END;
 
 EXEC dbo.usp_GetAllProductsFromSpecificSubcategoryID @ProductSubcategoryID=17;
+
 
 --	4.	Create a procedure that takes a job title and hire date and returns matching employees. 
 SELECT * FROM HumanResources.Employee
@@ -100,7 +105,9 @@ END;
 
 EXEC dbo.usp_GetAllCustomers @TerritoryID=4;
 
+
 --	6.	Write a procedure to list all sales orders placed after a given date. 
+
 SELECT * FROM Sales.SAlesOrderHeader;
 SELECT * FROM Sales.SalesOrderDetail;
 
@@ -113,6 +120,7 @@ BEGIN
 END;
 
 EXEC dbo. usp_GetAllSalesOrdersGivenDate
+
 
 --	7.	Create a procedure that returns all products with stock less than a given quantity (from Production.ProductInventory). 
 
@@ -129,6 +137,7 @@ EXEC dbo.usp_GetAllProductsLessThenGivenQuantity;
 
 
 --	8.	Write a procedure that returns vendors from Purchasing.Vendor based on CreditRating input. 
+
 SELECT * FROM Purchasing.Vendor;
 
 CREATE PROCEDURE usp_GetVendorsBsedOnCreditRating
@@ -156,7 +165,9 @@ END;
 
 EXEC dbo.usp_GetAllTransactionsBasedOnProduct @ProductID=711;
 
+
 --	10.	Create a procedure that lists all addresses in a given city from Person.Address. 
+
 SELECT * FROM Person.Address;
 
 DROP PROCEDURE usp_GetAllAddressBasedOnCity;
@@ -174,9 +185,8 @@ EXEC dbo.usp_GetAllAddressBasedOnCity @City=Portland;
 
 2025-05-29 
 
- 
-
 -- 1. Write a query to list the top 10 employees (HumanResources.Employee) along with their job title and hire date. 
+
 SELECT * FROM HumanResources.Employee;
 
 CREATE PROCEDURE usp_GetTOP10Employees
@@ -189,7 +199,9 @@ END;
 
 EXEC dbo.usp_GetTOP10Employees;
 
+
 -- 2. Write a query to find all customers (Sales.Customer) from the United Kingdom. 
+
 SELECT * FROM Sales.SAlesTerritory;
 SELECT * FROM Sales.Customer;
 
@@ -299,6 +311,7 @@ END;
 
 EXEC dbo.usp_ShowAllEmployeesBasedOnNotes @Note=0x7ADB18;
 
+
 --3. Create a view vwRecentHires that lists employees hired after 2018. 
 --error
 SELECT * FROM HumanResources.Employee;
@@ -355,6 +368,7 @@ BEGIN
 END;
 EXEC dbo.usp_GetEmployeeByTitle @JobTitle='Design Engineer';
 EXEC dbo.usp_GetEmployeeByTitle @JobTitle='Production Technician - WC60';				
+
 
 --6. Write a subquery to find customers (Sales.Customer) who have placed more than the average number of orders. 
 SELECT * FROM Sales.Customer
@@ -432,8 +446,7 @@ WHERE JobTitle='Production Technician';
 --10. Truncate the Training.EmployeeNotes table. 
 
 SELECT * FROM Training.EmployeeNotes
-
-Truncate Table Training.EmployeeNotes
+TRUNCATE TABLE  Training.EmployeeNotes
 
 
 --11. Write a query that shows the number of employees in each department. 
@@ -507,7 +520,11 @@ WHERE BusinessEntityID IN
 		BusinessEntityID
 	HAVING COUNT(distinct EmailAddress) > 1
 )
+
+
+
 --14. Write a stored procedure to insert a note for a given employee ID, with parameters: @BusinessEntityID, @Note. 
+
 Method 1
 
 CREATE  PROCEDURE usp_InsertANote
@@ -524,7 +541,6 @@ BEGIN
 END;
 
 EXEC dbo.usp_InsertANote
-
 
 
 Method 2
@@ -545,7 +561,7 @@ END;
 EXEC dbo.usp_InsertANote @BusinessEntityID=1,@Note='ContractEmployee'
 
 Method 3
-DROP PROCEDURE If Exists  usp_InsertANote
+DROP PROCEDURE If Exists usp_InsertANoteFromExistingTable
 CREATE  PROCEDURE usp_InsertANoteFromExistingTable
 	@BusinessEntityID INT,
 	@Note hierarchyid
@@ -569,13 +585,17 @@ EXEC dbo.usp_InsertANoteFromExistingTable @BusinessEntityID=1,@Note='10OX';
 
 Select * FROM Production.Product
 
-SELECT 
-	ProductId,Name
-FROM 
-	Production.Product
-WHERE Name Like '%user-supplied%';
-
- 
+CREATE PROCEDURE usp_GetA_All_Products_Contain_User_Supplied
+AS
+BEGIN
+	SELECT 
+		ProductId,Name
+	FROM 
+		Production.Product
+	WHERE 
+		Name Like '%user-supplied%';
+END;
+EXEC dbo.usp_GetA_All_Products_Contain_User_Supplied;
 
  
 
@@ -710,25 +730,23 @@ SELECT * FROM Purchasing.Vendor
 SELECT * FROM Purchasing.ProductVendor
 
 CREATE VIEW TOP_5_Customers_Total_Purchase_Amount AS
-	SELECT TOP 5
-		pv.BusinessEntityID,
-		pv.Name,
-		SUM(LineTotal)As Total_Purchase_Amount
-	FROM	
-		Purchasing.Vendor pv
-	LEFT JOIN Purchasing.ProductVendor ppv ON pv.BusinessEntityID = ppv.BusinessEntityID
-	LEFT JOIN Purchasing.PurchaseOrderDetail ppod ON ppod.ProductID = ppv.ProductID
-	GROUP BY
-		pv.BusinessEntityID,
-		pv.Name
+	
+SELECT TOP 5
+	pv.BusinessEntityID,
+	pv.Name,
+	SUM(LineTotal)As Total_Purchase_Amount
+FROM	
+	Purchasing.Vendor pv
+LEFT JOIN Purchasing.ProductVendor ppv ON pv.BusinessEntityID = ppv.BusinessEntityID
+LEFT JOIN Purchasing.PurchaseOrderDetail ppod ON ppod.ProductID = ppv.ProductID
+GROUP BY
+	pv.BusinessEntityID,
+	pv.Name
 
 SELECT * FROM TOP5CustomersTotalPurchaseAmount
  
+
 --8. Write a query to find duplicate customers based on email or name (hint: use GROUP BY and HAVING). 
-SELECT * FROM Purchasing.Vendor
-
-
-
 
 SELECT * FROM Person.EmailAddress
 SELECT * FROM Person.Person
@@ -856,6 +874,7 @@ HAVING
 	COUNT(*) > 3
 ORDER BY
 	COUNT(*)
+
 	
 --14. Create a stored procedure to archive old orders (older than 5 years) into a backup table. 
 SELECT * FROM Sales.SalesOrderHeader
@@ -920,6 +939,7 @@ SELECT * FROM HumanResources.EmployeeDepartmentHistory
 
 
 --16. Create a procedure to insert a new product with a default product subcategory (use Production.Product and Production.ProductSubcategory). 
+
 SELECT * FROM Production.Product
 SELECT * FROM Production.ProductSubcategory
 
@@ -970,7 +990,6 @@ SELECT * FROM Production.Product
 SELECT * FROM Production.ProductCategory
 SELECT * FROM Production.ProductSubcategory
 
-
 CREATE VIEW usp_ListProducts AS
 
 SELECT
@@ -985,9 +1004,52 @@ LEFT JOIN Production.ProductSubcategory pps ON pp.ProductSubcategoryID = pps.Pro
 LEFT JOIN Production.ProductCategory ppc  ON ppc.ProductCategoryID = pps.ProductCategoryID
 
 SELECT * FROM usp_ListProducts;
+
 	
---19. Write a stored procedure that generates a report of top 5 employees by total hours worked (use HumanResources.EmployeePayHistory as needed). 
+--19. Write a stored procedure that generates a report of top 5 employees by total hours worked (use HumanResources.EmployeePayHistory as needed).
+SELECT * FROM HumanResources.EmployeePayHistory
+SELECT * FROM HumanResources.Employee
+SELECT * FROM HumanResources.EmployeeDepartmentHistory
+SELECT * FROM HumanResources.Shift
+
+CREATE PROCEDURE usp_top_5_Employees_Total_Working_Hours_Per_Day
+AS
+BEGIN
+	SELECT TOP 5
+		hre.BusinessEntityID,
+		hredh.DepartmentID,
+		hredh.StartDate,
+		hredh.EndDate,
+		hrs.StartTime,
+		hrs.EndTime,
+		DATEDIFF ( Hour, hrs.StartTime, hrs.EndTime) AS Total_Hours_Per_Day,
+		DATEDIFF(DAY,hredh.StartDate,GETDATE())AS No_Of_Days_Worked
+	FROM
+		HumanResources.Employee hre
+	LEFT JOIN HumanResources.EmployeeDepartmentHistory hredh ON hre.BusinessEntityID = hredh.BusinessEntityID
+	LEFT JOIN HumanResources.Shift hrs ON hrs.ShiftID = hredh.ShiftID
+END;
+EXEC dbo.usp_top_5_Employees_Total_Working_Hours_Per_Day;
+
 
 --20. Write a stored procedure to find employees promoted within the last 2 years (based on title change in EmployeeDepartmentHistory). 
-
+SELECT * FROM HumanResources.EmployeeDepartmentHistory
+SELECT * FROM HumanResources.Employee
  
+ CREATE PROCEDURE usp_Find_Employees_Last_2_Years
+ AS
+ BEGIN
+
+	SELECT 
+		hre.BusinessEntityID,
+		hre.HireDate,
+		DATEDIFF(YEAR,HireDate,GETDATE())AS Last_2_Years_Employee
+	FROM
+		HumanResources.Employee hre
+	LEFT JOIN HumanResources.EmployeeDepartmentHistory hredh ON hre.BusinessEntityID = hredh.BusinessEntityID
+	WHERE 
+		DATEDIFF(YEAR,HireDate,GETDATE())>=2
+	ORDER BY
+		hre.HireDate
+END;
+EXEC dbo.usp_Find_Employees_Last_2_Years;
